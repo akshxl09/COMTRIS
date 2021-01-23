@@ -38,6 +38,8 @@ while True:
     list_ = soup.find("tbody").findAll("tr")
 
     document={}
+    original={}
+
 
     for j in list_:
         name = j.find("th")
@@ -46,36 +48,42 @@ while True:
             cpu = RP.cpu(value.text)
             if cpu:
                 document['CPU']=cpu
+                original['CPU']=value.text
             else:
                 break
         elif name.text =='메인보드':
             mb = RP.mb(value.text)
             if mb:
                 document['M/B']=mb
+                original['M/B']=value.text
             else:
                 break
         elif name.text =='그래픽카드':
             vga = RP.vga(value.text)
             if vga:
                 document['VGA']=vga
+                original['VGA']=value.text
             else:
                 break
         elif name.text =='메모리':
             ram = RP.ram(value.text)
             if ram:
                 document['RAM']=ram
+                original['RAM']=value.text
             else:
                 break
         elif name.text =='SSD':
             ssd = RP.ssd(value.text)
             if ssd:
                 document['SSD']=ssd
+                original['SSD']=value.text
             else:
                 break
         elif name.text =='파워':
             power = RP.power(value.text)
             if power:
                 document['POWER']=power
+                original['POWER']=value.text
             else:
                 break
 
@@ -86,6 +94,7 @@ while True:
     db.cursor()['master_config'].update_one({'key':'selenium_cnt'},{'$set':{'value':cnt}})
 
     if 'CPU' in document and 'M/B' in document and 'VGA' in document and 'RAM' in document and 'SSD' in document and 'POWER' in document:
+        document['original']=original
         db.cursor()['pc_selenium'].insert_one(document)
         #print(document) #DB에 넣는걸로 수정
         #print(cnt)
