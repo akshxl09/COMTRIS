@@ -24,7 +24,6 @@ while True:
     time.sleep(random.randrange(3,6))
     try:
         driver.find_element_by_xpath('//*[@id="contents_pc26"]/div/div[4]/div[%s]/a' %cnt).send_keys(Keys.CONTROL + '\n') #구매후기 클릭, 새 창으로 띄워서 클릭
-        print(driver.window_handles)
     except:
         target = driver.find_element_by_xpath('//*[@id="danawa_warp"]/div[4]/div[2]/button') #다음에 읽을 구매후기가 로딩되지 않았다면 스크롤 버튼 클릭
         driver.execute_script('arguments[0].click();', target)
