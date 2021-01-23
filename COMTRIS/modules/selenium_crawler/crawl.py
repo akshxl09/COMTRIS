@@ -47,6 +47,7 @@ while True:
             cpu = RP.cpu(value.text)
             if cpu:
                 document['CPU']=cpu
+            else:
                 break
         elif name.text =='메인보드':
             mb = RP.mb(value.text)
