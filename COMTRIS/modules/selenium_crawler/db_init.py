@@ -22,11 +22,13 @@ class Mongo():
 def db_init():
     db = Mongo()
 
-    cnt_check = db.cursor()['master_config'].find_one({'key':'selenium_cnt'})
-    if not cnt_check:
-        db.cursor()['master_config'].insert_one({'key':'selenium_cnt', 'value':1})
-        db.cursor()['master_config'].insert_one({'key':'recent_time', 'value':datetime.datetime.now()})
-        print('selenium_init complete...')
+    review_cnt_check = db.cursor()['master_config'].find_one({'key':'review_cnt'})
+    gallery_cnt_check = db.cursor()['master_config'].find_one({'key':'gallery_cnt'})
+    if not review_cnt_check:
+        db.cursor()['master_config'].insert_one({'key':'review_cnt', 'value':1})
+    if not gallery_cnt_check:
+        db.cursor()['master_config'].insert_one({'key':'gallery_cnt', 'value':1})
+    print('selenium_init complete...')
 
 if __name__=="__main__":
     db_init()
