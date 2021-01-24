@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-import os
+import os, datetime
 
 class Mongo():
     '''MongoDB Database Management'''
@@ -25,6 +25,7 @@ def db_init():
     cnt_check = db.cursor()['master_config'].find_one({'key':'selenium_cnt'})
     if not cnt_check:
         db.cursor()['master_config'].insert_one({'key':'selenium_cnt', 'value':1})
+        db.cursor()['master_config'].insert_one({'key':'recent_time', 'value':datetime.datetime.now()})
         print('selenium_init complete...')
 
 if __name__=="__main__":
