@@ -1,11 +1,14 @@
-import requests
-from pymongo import *
-from bs4 import BeautifulSoup
-import re
-import datetime
 import sys
 sys.path.insert(0, '../../../../COMTRIS_AI/src')
+import requests
+import re
+import datetime
+import os
+from pymongo import *
+from bs4 import BeautifulSoup
 from preprocessor import RegexPreprocessor
+
+
 
 header = {
             "User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5)\
@@ -68,10 +71,10 @@ class crawler_danawa_pc(crawler): # db 관리 포함
     def __init__(self, url):
         super().__init__(url)
         # db
-        self.myclient = MongoClient("mongodb://localhost:27017/") # mongodb의 port의 기본값은 27017, 일단 로컬로
+        self.myclient = MongoClient(os.environ["COMTRIS_MONGODB_URI"]) # mongodb의 port의 기본값은 27017, 일단 로컬로
         #self.db_comtris = MongoClient('mongodb://%s:%s@%s' %(MONGO_ID, MONGO_PW, MONGO_HOST)
-        self.db = self.myclient['test']
-        self.col = self.db["col"]
+        self.db = self.myclient['COMTIRS']
+        self.col = self.db["pc_quote"]
     # DB methods
     def insert_one(self, document):
         self.col.insert_one(document) # self.col에 삽입
