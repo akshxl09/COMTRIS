@@ -85,8 +85,8 @@ class crawler_danawa_pc(crawler): # db 관리 포함
 
     def getRows(self):
         rows = self.page.select('.tbl_t3>tbody>tr>.tit')
-        print("rows = ", rows)
-        print("len(rows) = ", len(rows))
+        # print("rows = ", rows)
+        # print("len(rows) = ", len(rows))
     
     def getKey(self):
         self.keys = []
@@ -109,7 +109,7 @@ class crawler_danawa_pc(crawler): # db 관리 포함
         return self.keys
 
     def getDict(self, keys, id):
-        print("getDict")
+        # print("getDict")
         result = {'id':id} # id 추가하여 초기화
         price = {}
         original = {}
@@ -119,7 +119,7 @@ class crawler_danawa_pc(crawler): # db 관리 포함
             value = self.page.select('.tbl_t3>tbody>tr>.tit')[idx].text
             value = value.strip().split('\n')
             aver_price = self.page.select('.tbl_t3>tbody>tr>.prc')[idx].text
-            # print("_id = ", id, "idx = ", idx, "key = ", key, "value = ", value[0], aver_price, "원")
+            # # print("_id = ", id, "idx = ", idx, "key = ", key, "value = ", value[0], aver_price, "원")
 
             if key == "CPU":
                 cpu = RP.cpu(value[0])# 세이프업 때문에 0으로 함
@@ -128,7 +128,7 @@ class crawler_danawa_pc(crawler): # db 관리 포함
                     result["CPU"]=cpu
                     price.update({key : aver_price})
                 else : 
-                    print("정규식에 맞지 않음-cpu")
+                    # print("정규식에 맞지 않음-cpu")
                     return 0
             elif key == "M/B":
                 mb = RP.mb(value[0])# 세이프업 때문에 0으로 함
@@ -137,7 +137,7 @@ class crawler_danawa_pc(crawler): # db 관리 포함
                     result["M/B"]=mb
                     price.update({key : aver_price})
                 else : 
-                    print("정규식에 맞지 않음-mb")
+                    # print("정규식에 맞지 않음-mb")
                     return 0
             elif key == "RAM":
                 ram = RP.ram(value[0])# 세이프업 때문에 0으로 함
@@ -146,7 +146,7 @@ class crawler_danawa_pc(crawler): # db 관리 포함
                     result["RAM"]=ram
                     price.update({key : aver_price})
                 else : 
-                    print("정규식에 맞지 않음-ram")
+                    # print("정규식에 맞지 않음-ram")
                     return 0
             elif key == "SSD":
                 ssd = RP.ssd(value[0])# 세이프업 때문에 0으로 함
@@ -155,7 +155,7 @@ class crawler_danawa_pc(crawler): # db 관리 포함
                     result["SSD"]=ssd
                     price.update({key : aver_price})
                 else : 
-                    print("정규식에 맞지 않음-ssd")
+                    # print("정규식에 맞지 않음-ssd")
                     return 0
             elif key == "VGA":
                 vga = RP.vga(value[0])# 세이프업 때문에 0으로 함
@@ -164,7 +164,7 @@ class crawler_danawa_pc(crawler): # db 관리 포함
                     result["VGA"]=vga
                     price.update({key : aver_price})
                 else : 
-                    print("정규식에 맞지 않음-vga")
+                    # print("정규식에 맞지 않음-vga")
                     return 0
             elif key == "POWER":
                 power = RP.power(value[0])# 세이프업 때문에 0으로 함
@@ -173,7 +173,7 @@ class crawler_danawa_pc(crawler): # db 관리 포함
                     result["POWER"]=power
                     price.update({key : aver_price})
                 else : 
-                    print("정규식에 맞지 않음-power")
+                    # print("정규식에 맞지 않음-power")
                     return 0
 
 
