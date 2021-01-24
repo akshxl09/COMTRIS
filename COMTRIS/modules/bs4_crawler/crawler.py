@@ -73,7 +73,7 @@ class crawler_danawa_pc(crawler): # db 관리 포함
         # db
         self.myclient = MongoClient(os.environ["COMTRIS_MONGODB_URI"]) # mongodb의 port의 기본값은 27017, 일단 로컬로
         #self.db_comtris = MongoClient('mongodb://%s:%s@%s' %(MONGO_ID, MONGO_PW, MONGO_HOST)
-        self.db = self.myclient['COMTIRS']
+        self.db = self.myclient['COMTRIS']
         self.col = self.db["pc_quote"]
     # DB methods
     def insert_one(self, document):
