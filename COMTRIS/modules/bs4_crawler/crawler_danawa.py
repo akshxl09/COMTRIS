@@ -18,7 +18,7 @@ def run_crawler():
     pageNum=0
     
     while(1): #무한 반복
-        # time.sleep(numpy.random.randint(5,7)) # sleep
+        time.sleep(numpy.random.randint(5,7)) # sleep
         try :
             print("="*15, "현재 페이지 = ", pageNum, "="*15)
             pageNum += 1 # 다음 페이지
@@ -63,7 +63,7 @@ def run_crawler():
                             
                     else: # 비밀글이 아니므로 링크에 접속
                         try :
-                            #time.sleep(numpy.random.randint(5,7)) # sleep
+                            time.sleep(numpy.random.randint(5,7)) # sleep
                             crawler_pc = crawler_danawa_pc(link)
                         except Exception as e:
                             print('link 접속 실패')
