@@ -81,7 +81,7 @@ def run_crawler():
                                 keys = crawler_pc.getKey() # key를 받음
                                 # print("keys = ", keys)
                                 if crawler_pc.KeysValidation(keys):
-                                    result = crawler_pc.getDict(keys, id) # 사전 형식으로 데이터를 받아옴
+                                    result = crawler_pc.getDict(keys, id, status) # 사전 형식으로 데이터를 받아옴
                                     if result:
                                         crawler_pc.insert_one(result) # db에 삽입
                                         # print("삽입 완료, result = ", result)

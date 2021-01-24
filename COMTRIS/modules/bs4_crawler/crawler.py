@@ -108,9 +108,9 @@ class crawler_danawa_pc(crawler): # db 관리 포함
                 self.keys.append(i)
         return self.keys
 
-    def getDict(self, keys, id):
+    def getDict(self, keys, id, status):
         # print("getDict")
-        result = {'id':id} # id 추가하여 초기화
+        result = {'id':id, 'status':status} # id 추가하여 초기화
         price = {}
         original = {}
         RP = RegexPreprocessor() # 정규식 객체
