@@ -1,10 +1,14 @@
+import sys
+sys.path.insert(0,'../../../../COMTRIS_AI/src')
+import requests
+import time
+import os
+import datetime
+import numpy as np
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import requests, time, sys, os, datetime
-import numpy as np
 from db_init import Mongo
-sys.path.insert(0,'../../../../COMTRIS_AI/src')
 from preprocessor import RegexPreprocessor
 
 def selenium_crawler(url, category):
@@ -25,8 +29,7 @@ def selenium_crawler(url, category):
         db_result = db.cursor()['master_config'].find_one({'key':'review_cnt'})
     elif category == "조립갤러리":
         db_result = db.cursor()['master_config'].find_one({'key':'gallery_cnt'})    
-    cnt = db_result['value']
-
+    cnt = db_result['value'] #읽은 위치 가져오기
 
     while True:
         try:
@@ -36,17 +39,31 @@ def selenium_crawler(url, category):
             driver.execute_script('arguments[0].click();', target)
             continue
 
-        recent_time = datetime.datetime.now()
-        db.cursor()['master_config'].update_one({'key':'recent_time'}, {'$set':{'value':recent_time }})
-
         time.sleep(np.random.randint(5,7))
         driver.switch_to.window(driver.window_handles[1]) #새 탭으로 이동
+
+        cnt+=1
+        current_url = driver.current_url
+        if category == "구매후기":
+            db.cursor()['master_config'].update_one({'key':'review_cnt'},{'$set':{'value':cnt}}) #cnt 갱신
+            idx = current_url.find("reviewSeq")+10
+            id_result = db.cursor()['review'].find_one({'id':current_url[idx:]})
+
+        elif category == "조립갤러리":
+            db.cursor()['master_config'].update_one({'key':'gallery_cnt'},{'$set':{'value':cnt}}) #cnt 갱신
+            idx = current_url.find("NumberSeq")+10
+            id_result = db.cursor()['gallery'].find_one({'id':current_url[idx:]})
+        
+        if id_result: #db에 이미 존재하는 값이면
+            driver.close() #현재 탭 종료
+            driver.switch_to.window(driver.window_handles[0]) #부모 탭으로 이동
+            continue
 
         html = driver.page_source
         soup = BeautifulSoup(html,"html.parser")
 
-        list_ = soup.find("div", attrs={'class':'detail_spec'}).find("tbody").findAll("tr")
-        shop_date = soup.find("div",attrs={'class':'ds_info'}).find('span')
+        list_ = soup.find("div", attrs={'class':'detail_spec'}).find("tbody").findAll("tr") #테이블 찾기
+        shop_date = soup.find("div",attrs={'class':'ds_info'}).find('span') #구매날짜 찾기
 
         document={}
         original={}
@@ -100,20 +117,14 @@ def selenium_crawler(url, category):
         driver.close() #현재 탭 종료
         driver.switch_to.window(driver.window_handles[0]) #부모 탭으로 이동
 
-        cnt+=1
-        if category == "구매후기":
-            db.cursor()['master_config'].update_one({'key':'review_cnt'},{'$set':{'value':cnt}})
-        elif category == "조립갤러리":
-            db.cursor()['master_config'].update_one({'key':'gallery_cnt'},{'$set':{'value':cnt}})
-
-        if 'CPU' in document and 'M/B' in document and 'VGA' in document and 'RAM' in document and 'SSD' in document and 'POWER' in document:
+        if 'CPU' in document and 'M/B' in document and 'VGA' in document and 'RAM' in document and 'SSD' in document and 'POWER' in document: 
             tmp = shop_date.text[:-1].replace('.','-')
             document['shop_date'] = datetime.datetime.strptime(tmp, '%Y-%m-%d' ) #구매날짜 넣어주기
             document['crawl_date'] = datetime.datetime.now() #크롤링한 시간 넣어주기
             document['original']=original
+            document['id'] = current_url[idx:]
             if category == "구매후기":
                 db.cursor()['review'].insert_one(document)
             elif category == "조립갤러리":
                 db.cursor()['gallery'].insert_one(document)
-
         
