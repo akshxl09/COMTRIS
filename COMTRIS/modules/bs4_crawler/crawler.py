@@ -124,36 +124,66 @@ class crawler_danawa_pc(crawler): # db 관리 포함
 
             
             if key == "CPU": 
-                cpu = RP.cpu(value[0])# 세이프업 때문에 0으로 함    
+                cpu = RP.cpu(value[0])# 세이프업 때문에 0으로 함  
                 original["CPU"] = value[0]
                 result["CPU"]=cpu
                 price.update({key : aver_price})
+                
+                if cpu == None or pass_ == 0: # cpu가 none이거나 pass가 0이면
+                    pass_ = 0 # pass값 지정
+                else:
+                    pass_ = 1
             
             elif key == "M/B":
                 mb = RP.mb(value[0])# 세이프업 때문에 0으로 함
                 original["M/b"] = value[0]
                 result["M/B"]=mb
                 price.update({key : aver_price})
+                if mb == None or pass_ == 0: # mb가 none이거나 pass가 0이면
+                    pass_ = 0 # pass값 지정
+                else:
+                    pass_ = 1
+
             elif key == "RAM":
                 ram = RP.ram(value[0])# 세이프업 때문에 0으로 함
                 original["RAM"] = value[0]
                 result["RAM"]=ram
                 price.update({key : aver_price})
+
+                if ram == None or pass_ == 0: # ram가 none이거나 pass가 0이면
+                    pass_ = 0 # pass값 지정
+                else:
+                    pass_ = 1
             elif key == "SSD":
                 ssd = RP.ssd(value[0])# 세이프업 때문에 0으로 함
                 original["SSD"] = value[0]
                 result["SSD"]=ssd
                 price.update({key : aver_price})
+
+                if ssd == None or pass_ == 0: # ssd가 none이거나 pass가 0이면
+                    pass_ = 0 # pass값 지정
+                else:
+                    pass_ = 1
             elif key == "VGA":
                 vga = RP.vga(value[0])# 세이프업 때문에 0으로 함
                 original["VGA"] = value[0]
                 result["VGA"]=vga
                 price.update({key : aver_price})
+
+                if vga == None or pass_ == 0: # vga가 none이거나 pass가 0이면
+                    pass_ = 0 # pass값 지정
+                else:
+                    pass_ = 1
             elif key == "POWER":
                 power = RP.power(value[0])# 세이프업 때문에 0으로 함
                 original["POWER"] = value[0]
                 result["POWER"]=power
                 price.update({key : aver_price})
+
+                if power == None or pass_ == 0: # cpu가 none이거나 pass가 0이면
+                    pass_ = 0 # pass값 지정
+                else:
+                    pass_ = 1
 
         # 구매 날짜 긁기 -> date type으로 변경
         shop_date = re.search("\d{4}.\d{2}.\d{2}\s\s\d{2}:\d{2}", self.page.select('.u_info>.date')[0].text).group()
@@ -164,7 +194,7 @@ class crawler_danawa_pc(crawler): # db 관리 포함
         crawl_date = datetime.datetime.now()
         result.update({'id' : id, 'original':original, 'price' : price, "crawl_date" : crawl_date, 'shop_date' : shop_date})
   
-        return result
+        return result, pass_
     def KeysValidation(self, keys):
         flag = True # 문제 없음
         empty_part = []
