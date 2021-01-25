@@ -113,6 +113,7 @@ class crawler_danawa_pc(crawler): # db 관리 포함
         result = {'id':id, 'status':status} # id 추가하여 초기화
         price = {}
         original = {}
+        pass_ = 1
         RP = RegexPreprocessor() # 정규식 객체
 
         for idx, key in enumerate(keys):
@@ -121,61 +122,38 @@ class crawler_danawa_pc(crawler): # db 관리 포함
             aver_price = self.page.select('.tbl_t3>tbody>tr>.prc')[idx].text
             # # print("_id = ", id, "idx = ", idx, "key = ", key, "value = ", value[0], aver_price, "원")
 
-            if key == "CPU":
-                cpu = RP.cpu(value[0])# 세이프업 때문에 0으로 함
-                if cpu:
-                    original["CPU"] = value[0]
-                    result["CPU"]=cpu
-                    price.update({key : aver_price})
-                else : 
-                    # print("정규식에 맞지 않음-cpu")
-                    return 0
+            
+            if key == "CPU": 
+                cpu = RP.cpu(value[0])# 세이프업 때문에 0으로 함    
+                original["CPU"] = value[0]
+                result["CPU"]=cpu
+                price.update({key : aver_price})
+            
             elif key == "M/B":
                 mb = RP.mb(value[0])# 세이프업 때문에 0으로 함
-                if mb:
-                    original["M/b"] = value[0]
-                    result["M/B"]=mb
-                    price.update({key : aver_price})
-                else : 
-                    # print("정규식에 맞지 않음-mb")
-                    return 0
+                original["M/b"] = value[0]
+                result["M/B"]=mb
+                price.update({key : aver_price})
             elif key == "RAM":
                 ram = RP.ram(value[0])# 세이프업 때문에 0으로 함
-                if ram:
-                    original["RAM"] = value[0]
-                    result["RAM"]=ram
-                    price.update({key : aver_price})
-                else : 
-                    # print("정규식에 맞지 않음-ram")
-                    return 0
+                original["RAM"] = value[0]
+                result["RAM"]=ram
+                price.update({key : aver_price})
             elif key == "SSD":
                 ssd = RP.ssd(value[0])# 세이프업 때문에 0으로 함
-                if ssd:
-                    original["SSD"] = value[0]
-                    result["SSD"]=ssd
-                    price.update({key : aver_price})
-                else : 
-                    # print("정규식에 맞지 않음-ssd")
-                    return 0
+                original["SSD"] = value[0]
+                result["SSD"]=ssd
+                price.update({key : aver_price})
             elif key == "VGA":
                 vga = RP.vga(value[0])# 세이프업 때문에 0으로 함
-                if vga:
-                    original["VGA"] = value[0]
-                    result["VGA"]=vga
-                    price.update({key : aver_price})
-                else : 
-                    # print("정규식에 맞지 않음-vga")
-                    return 0
+                original["VGA"] = value[0]
+                result["VGA"]=vga
+                price.update({key : aver_price})
             elif key == "POWER":
                 power = RP.power(value[0])# 세이프업 때문에 0으로 함
-                if power:
-                    original["POWER"] = value[0]
-                    result["POWER"]=power
-                    price.update({key : aver_price})
-                else : 
-                    # print("정규식에 맞지 않음-power")
-                    return 0
-
+                original["POWER"] = value[0]
+                result["POWER"]=power
+                price.update({key : aver_price})
 
         # 구매 날짜 긁기 -> date type으로 변경
         shop_date = re.search("\d{4}.\d{2}.\d{2}\s\s\d{2}:\d{2}", self.page.select('.u_info>.date')[0].text).group()
