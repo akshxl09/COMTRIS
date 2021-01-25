@@ -23,7 +23,7 @@ def selenium_crawler(url, category):
 
     #다나와 구매후기 페이지로 이동
     driver.get(url)
-    time.sleep(np.random.randint(5,7))
+    time.sleep(np.random.randint(3,5))
     
     if category == "구매후기":
         db_result = db.cursor()['master_config'].find_one({'key':'review_cnt'})
@@ -39,7 +39,7 @@ def selenium_crawler(url, category):
             driver.execute_script('arguments[0].click();', target)
             continue
 
-        time.sleep(np.random.randint(5,7))
+        time.sleep(np.random.randint(3,5))
         driver.switch_to.window(driver.window_handles[1]) #새 탭으로 이동
 
         cnt+=1
@@ -62,69 +62,68 @@ def selenium_crawler(url, category):
         html = driver.page_source
         soup = BeautifulSoup(html,"html.parser")
 
-        list_ = soup.find("div", attrs={'class':'detail_spec'}).find("tbody").findAll("tr") #테이블 찾기
-        shop_date = soup.find("div",attrs={'class':'ds_info'}).find('span') #구매날짜 찾기
+        list_ = soup.find("div", attrs={'class':'detail_spec'})
+        table = list_.find("tbody").findAll("tr") #테이블 찾기
+        shop_date = list_.find("div",attrs={'class':'ds_info'}).find('span') #구매날짜 찾기
 
         document={}
         original={}
 
-        for j in list_:
+        flag = 1
+        for j in table:
             name = j.find("th")
             value = j.find("a")
             if name.text =='CPU':
                 cpu = RP.cpu(value.text)
-                if cpu:
-                    document['CPU']=cpu
-                    original['CPU']=value.text
-                else:
-                    break
+                original['CPU']=value.text
+                document['CPU']=cpu
+                if not cpu:
+                    flag = 0            
             elif name.text =='메인보드':
                 mb = RP.mb(value.text)
-                if mb:
-                    document['M/B']=mb
-                    original['M/B']=value.text
-                else:
-                    break
+                original['M/B']=value.text
+                document['M/B']=mb
+                if not mb:
+                    flag = 0
             elif name.text =='그래픽카드':
                 vga = RP.vga(value.text)
-                if vga:
-                    document['VGA']=vga
-                    original['VGA']=value.text
-                else:
-                    break
+                original['VGA']=value.text
+                document['VGA']=vga 
+                if not vga:
+                    flag = 0           
             elif name.text =='메모리':
                 ram = RP.ram(value.text)
-                if ram:
-                    document['RAM']=ram
-                    original['RAM']=value.text
-                else:
-                    break
+                original['RAM']=value.text
+                document['RAM']=ram
+                if not ram:
+                    flag = 0            
             elif name.text =='SSD':
                 ssd = RP.ssd(value.text)
-                if ssd:
-                    document['SSD']=ssd
-                    original['SSD']=value.text
-                else:
-                    break
+                original['SSD']=value.text
+                document['SSD']=ssd
+                if not ssd:
+                    flag = 0
             elif name.text =='파워':
                 power = RP.power(value.text)
-                if power:
-                    document['POWER']=power
-                    original['POWER']=value.text
-                else:
-                    break
+                original['POWER']=value.text
+                document['POWER']=power
+                if not power:
+                    flag = 0
+
 
         driver.close() #현재 탭 종료
         driver.switch_to.window(driver.window_handles[0]) #부모 탭으로 이동
 
-        if 'CPU' in document and 'M/B' in document and 'VGA' in document and 'RAM' in document and 'SSD' in document and 'POWER' in document: 
-            tmp = shop_date.text[:-1].replace('.','-')
-            document['shop_date'] = datetime.datetime.strptime(tmp, '%Y-%m-%d' ) #구매날짜 넣어주기
-            document['crawl_date'] = datetime.datetime.now() #크롤링한 시간 넣어주기
-            document['original']=original
-            document['id'] = current_url[idx:]
-            if category == "구매후기":
-                db.cursor()['review'].insert_one(document)
-            elif category == "조립갤러리":
-                db.cursor()['gallery'].insert_one(document)
-        
+        if 'CPU' not in document or 'M/B' not in document or 'VGA' not in document or 'RAM' not in document or 'SSD' not in document or 'POWER' not in document:
+            flag = 0
+
+        tmp = shop_date.text[:-1].replace('.','-')
+        document['shop_date'] = datetime.datetime.strptime(tmp, '%Y-%m-%d' ) #구매날짜 넣어주기
+        document['crawl_date'] = datetime.datetime.now() #크롤링한 시간 넣어주기
+        document['original'] = original
+        document['pass'] = flag
+        document['id'] = current_url[idx:]
+        if category == "구매후기":
+            db.cursor()['review'].insert_one(document)
+        elif category == "조립갤러리":
+            db.cursor()['gallery'].insert_one(document)

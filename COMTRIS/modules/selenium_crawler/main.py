@@ -1,7 +1,8 @@
 from crawl import selenium_crawler
 import click
 
-
+#http://pc26.danawa.com/bbs/?controller=boardReview&methods=reviewList
+#http://pc26.danawa.com/bbs/?controller=boardReview&methods=assemblyGalleryList
 
 @click.command()
 @click.option('--url', type=click.STRING, required=True, default=None, help="Target url")
