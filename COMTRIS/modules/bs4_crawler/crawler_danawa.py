@@ -80,14 +80,16 @@ def run_crawler():
                             try : 
                                 keys = crawler_pc.getKey() # key를 받음
                                 # print("keys = ", keys)
-                                if crawler_pc.KeysValidation(keys): # 문제 없음
-                                    result = crawler_pc.getDict(keys, id, status) # 사전 형식으로 데이터를 받아옴
+                                result, pass_ = crawler_pc.getDict(keys, id, status) # 사전 형식으로 데이터를 받아옴
+                                key_val = crawler_pc.KeysValidation(keys)
+                                # pass_ 는 1은 문제가 없는것, key_val도 True가 문제가 없는것
+
+                                if pass_ and key_val: # 문제 없음
                                     result.update({'id':id, 'pass':1}) # 문제없으므로 1
                                     crawler_pc.insert_one(result) # db에 삽입
                                     # print("삽입 완료, result = ", result)
                                 else : # 문제 있음
                                     # print("부품 없음")
-                                    result = crawler_pc.getDict(keys, id, status) # 사전 형식으로 데이터를 받아옴
                                     result.update({'id':id, 'pass':0}) # 문제없으므로 1
                                     crawler_pc.insert_one(result) # db에 삽입
 
