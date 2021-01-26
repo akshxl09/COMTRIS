@@ -61,10 +61,17 @@ def selenium_crawler(url, category):
 
         html = driver.page_source
         soup = BeautifulSoup(html,"html.parser")
+        
+        try:
+            list_ = soup.find("div", attrs={'class':'detail_spec'})
+            table = list_.find("tbody").findAll("tr") #테이블 찾기
+            shop_date = list_.find("div",attrs={'class':'ds_info'}).find('span') #구매날짜 찾기
+        except:
+            driver.close() #현재 탭 종료
+            driver.switch_to.window(driver.window_handles[0]) #부모 탭으로 이동
+            continue
 
-        list_ = soup.find("div", attrs={'class':'detail_spec'})
-        table = list_.find("tbody").findAll("tr") #테이블 찾기
-        shop_date = list_.find("div",attrs={'class':'ds_info'}).find('span') #구매날짜 찾기
+
 
         document={}
         original={}
