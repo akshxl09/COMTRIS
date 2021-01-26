@@ -23,7 +23,7 @@ def run_crawler():
     pageNum = col.find_one({'key': 'quote_cnt'})['value']
     # print("pagenum = ", pageNum)
     while(1): #무한 반복
-        time.sleep(numpy.random.randint(5,7)) # sleep
+        time.sleep(numpy.random.randint(3,5)) # sleep
         try :
             # print("="*15, "현재 페이지 = ", pageNum, "="*15)
             pageNum += 1 # 다음 페이지
@@ -70,7 +70,7 @@ def run_crawler():
                             
                     else: # 비밀글이 아니므로 링크에 접속
                         try :
-                            time.sleep(numpy.random.randint(5,7)) # sleep
+                            time.sleep(numpy.random.randint(3,5)) # sleep
                             crawler_pc = crawler_danawa_pc(link)
                         except Exception as e:
                             # print('link 접속 실패')
@@ -80,17 +80,18 @@ def run_crawler():
                             try : 
                                 keys = crawler_pc.getKey() # key를 받음
                                 # print("keys = ", keys)
-                                if crawler_pc.KeysValidation(keys):
-                                    result = crawler_pc.getDict(keys, id, status) # 사전 형식으로 데이터를 받아옴
-                                    if result:
-                                        crawler_pc.insert_one(result) # db에 삽입
-                                        # print("삽입 완료, result = ", result)
-                                    else :
-                                        continue
-                                        # print("정규식에 맞지 않음")
-                                else :
+                                result, pass_ = crawler_pc.getDict(keys, id, status) # 사전 형식으로 데이터를 받아옴
+                                key_val = crawler_pc.KeysValidation(keys)
+                                # pass_ 는 1은 문제가 없는것, key_val도 True가 문제가 없는것
+
+                                if pass_ and key_val: # 문제 없음
+                                    result.update({'id':id, 'pass':1}) # 문제없으므로 1
+                                    crawler_pc.insert_one(result) # db에 삽입
+                                    # print("삽입 완료, result = ", result)
+                                else : # 문제 있음
                                     # print("부품 없음")
-                                    continue
+                                    result.update({'id':id, 'pass':0}) # 문제없으므로 1
+                                    crawler_pc.insert_one(result) # db에 삽입
 
                             except Exception as e:
                                 continue
