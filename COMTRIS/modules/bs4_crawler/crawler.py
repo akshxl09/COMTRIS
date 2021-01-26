@@ -140,7 +140,7 @@ class crawler_danawa_pc(crawler): # db 관리 포함
             
             elif key == "M/B":
                 mb = RP.mb(value[0])# 세이프업 때문에 0으로 함
-                original["M/b"] = value[0]
+                original["M/B"] = value[0]
                 result["M/B"]=mb
                 # price.update({key : aver_price})
                 if mb == None or pass_ == 0: # mb가 none이거나 pass가 0이면
