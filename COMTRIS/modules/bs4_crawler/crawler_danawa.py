@@ -55,7 +55,7 @@ def run_crawler():
                     status = crawler_page.getStatus(i)
                     link = crawler_page.getDomain() + '/pc/' + crawler_page.getLink(i)
                     id = crawler_page.getLink(i)
-                    id = int(id[id.rfind("=")+2 : len(id)].strip())
+                    id = int(id[id.rfind("=")+1 : len(id)].strip())
                     # print(id, date, name, title, aver_price, status, link)
 
                 except Exception as e:

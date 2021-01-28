@@ -6,7 +6,7 @@ import datetime
 import os
 from pymongo import *
 from bs4 import BeautifulSoup
-from preprocessor import RegexPreprocessor
+from regex_processor import RegexPreprocessor
 
 
 
@@ -77,8 +77,11 @@ class crawler_danawa_pc(crawler): # db 관리 포함
         self.col = self.db["pc_quote"]
     # DB methods
     def insert_one(self, document):
-        self.col.insert_one(document) # self.col에 삽입
-
+        # id 중복체크
+        id = document['id']
+        isDuplicate = self.col.find_one({'id' : id})
+        if not isDuplicate: # 중복이 안되면 
+            self.col.insert_one(document) # self.col에 삽입
     # 소멸자
     def __del__(self):
         self.myclient.close()
