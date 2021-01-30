@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from db_init import Mongo
-from preprocessor import RegexPreprocessor
+from regex_processor import RegexPreprocessor
 
 def selenium_crawler(url, category):
     db = Mongo()
